@@ -1,0 +1,53 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Party | Snake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <header class="top-banner">
+    <h1 class="logo">SNAKE</h1>
+    <p class="tagline">Don’t bite yourself.</p>
+  </header>
+
+  <main class="game-layout">
+    <aside class="sidebar panel">
+      <h2>Stats</h2>
+      <div class="stat"><span>Score</span><span id="snakeScore">0</span></div>
+      <div class="stat"><span>Best</span><span id="snakeBest">0</span></div>
+      <div class="controls">
+        <p>Controls:</p>
+        <p>Arrow keys to move</p>
+        <p>R to restart quickly</p>
+        <p>P Pause/Resume</p>
+      </div>
+      <button class="reset-btn" id="restartSnake">RESTART</button><br>
+      <button class="reset-btn" id="pauseSnake">PAUSE</button><br>
+      <a class="back-link" href="index.html">BACK TO HUB</a>
+    </aside>
+
+    <section class="game-panel panel" style="position:relative;">
+      <canvas id="snakeCanvas" width="560" height="560"></canvas>
+      <div class="overlay" id="snakeOverlay">GAME OVER</div>
+      <div class="start-overlay" id="snakeStartOverlay">
+        <div class="start-card">
+          <h3>SNAKE</h3>
+          <p>Press Start when you are ready.</p>
+          <button class="reset-btn" id="startSnake">START GAME</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="snake.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,50 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Party | 2048</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="game2048-page">
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <header class="top-banner">
+    <h1 class="logo">2048</h1>
+    <p class="tagline">Merge numbers. Chase 2048.</p>
+  </header>
+
+  <main class="game-layout">
+    <aside class="sidebar panel">
+      <h2>Stats</h2>
+      <div class="stat"><span>Score</span><span id="score2048">0</span></div>
+      <div class="stat"><span>Best Tile</span><span id="bestTile">0</span></div>
+      <div class="controls">
+        <p>Controls:</p>
+        <p>Arrow keys to slide</p>
+        <p>R to restart quickly</p>
+      </div>
+      <button class="reset-btn" id="restart2048">RESTART</button><br>
+      <a class="back-link" href="index.html">BACK TO HUB</a>
+    </aside>
+
+    <section class="game-panel panel" style="position:relative;">
+      <div class="board-2048" id="board2048"></div>
+      <div class="overlay" id="overlay2048">NO MOVES LEFT</div>
+      <div class="start-overlay" id="startOverlay2048">
+        <div class="start-card">
+          <h3>2048</h3>
+          <p>Press Start when you are ready.</p>
+          <button class="reset-btn" id="start2048">START GAME</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="game2048.js"></script>
+</body>
+</html>
+
