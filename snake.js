@@ -47,6 +47,7 @@ function resetSnake() {
   running = snakeStarted;
   snakePaused = false;
   snakeOverlay.classList.remove('show');
+  snakeOverlay.textContent = 'GAME OVER';
   food = placeFood();
   snakeScoreEl.textContent = score;
   snakeBestEl.textContent = best;
@@ -96,6 +97,8 @@ function step() {
     snake.some((segment) => segment.x === head.x && segment.y === head.y)
   ) {
     running = false;
+    const earned = PixelPartyShop.awardGamePoints(score);
+    snakeOverlay.textContent = earned ? `GAME OVER · +${earned} SHOP POINT${earned === 1 ? '' : 'S'}` : 'GAME OVER';
     snakeOverlay.classList.add('show');
     return;
   }
@@ -131,6 +134,10 @@ function startSnakeGame() {
 }
 
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    event.preventDefault();
+  }
+
   const key = event.key.toLowerCase();
   if (key === 'p') {
     toggleSnakePause();
@@ -138,10 +145,7 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (key === 'r') {
-    if (!snakeStarted) {
-      startSnakeGame();
-      return;
-    }
+    if (!snakeStarted) return;
     resetSnake();
     return;
   }
@@ -155,10 +159,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 restartSnakeBtn.addEventListener('click', () => {
-  if (!snakeStarted) {
-    startSnakeGame();
-    return;
-  }
+  if (!snakeStarted) return;
   resetSnake();
 });
 

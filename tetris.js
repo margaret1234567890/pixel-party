@@ -77,15 +77,14 @@ function merge() {
 }
 
 function clearLines() {
-  let cleared = 0;
-  outer: for (let y = ROWS - 1; y >= 0; y--) {
-    for (let x = 0; x < COLS; x++) {
-      if (board[y][x] === 0) continue outer;
-    }
-    const row = board.splice(y, 1)[0].fill(0);
-    board.unshift(row);
-    cleared++;
-    y++;
+  const remainingRows = board.filter((row) => row.some((cell) => cell === 0));
+  const cleared = ROWS - remainingRows.length;
+
+  if (cleared > 0) {
+    board = [
+      ...Array.from({ length: cleared }, () => Array(COLS).fill(0)),
+      ...remainingRows
+    ];
   }
 
   if (cleared > 0) {
@@ -121,6 +120,8 @@ function spawnPiece() {
   piece = randomPiece();
   if (collide(board, piece)) {
     gameOver = true;
+    const earned = PixelPartyShop.awardGamePoints(score);
+    overlay.textContent = earned ? `GAME OVER · +${earned} SHOP POINT${earned === 1 ? '' : 'S'}` : 'GAME OVER';
     overlay.classList.add('show');
   }
 }
@@ -210,11 +211,13 @@ function draw() {
 
   drawGhostPiece();
 
-  piece.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value) drawCell(piece.x + x, piece.y + y, COLORS[value]);
+  if (isPlaying) {
+    piece.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value) drawCell(piece.x + x, piece.y + y, COLORS[value]);
+      });
     });
-  });
+  }
 }
 
 function update(time = 0) {
@@ -273,6 +276,7 @@ function resetGame() {
   gameOver = false;
   isPaused = false;
   overlay.classList.remove('show');
+  overlay.textContent = 'GAME OVER';
   spawnPiece();
   updateStats();
   setPauseButtonLabel();
@@ -285,6 +289,10 @@ function startGame() {
 }
 
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    event.preventDefault();
+  }
+
   const key = event.key.toLowerCase();
   if (key === 'p') {
     togglePause();
@@ -309,10 +317,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 restartBtn.addEventListener('click', () => {
-  if (!isPlaying) {
-    startGame();
-    return;
-  }
+  if (!isPlaying) return;
   resetGame();
 });
 

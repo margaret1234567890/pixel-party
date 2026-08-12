@@ -9,7 +9,6 @@ const startOverlay2048 = document.getElementById('startOverlay2048');
 let board;
 let score2048;
 let gameOver2048;
-let prevTiles = [];
 let boardBg;
 let tileLayer;
 let started2048 = false;
@@ -125,7 +124,7 @@ function makeMove(direction) {
 
   if (!boardsEqual(before, board)) {
     addRandomTile();
-    render(true, direction);
+    render();
     checkGameOver();
   }
 }
@@ -139,6 +138,8 @@ function checkGameOver() {
     }
   }
   gameOver2048 = true;
+  const earned = PixelPartyShop.awardGamePoints(score2048);
+  overlay2048.textContent = earned ? `NO MOVES LEFT · +${earned} SHOP POINT${earned === 1 ? '' : 'S'}` : 'NO MOVES LEFT';
   overlay2048.classList.add('show');
 }
 
@@ -164,55 +165,18 @@ function buildTiles() {
   return tiles;
 }
 
-function nearestTileIndex(pool, target, direction) {
-  let bestIndex = -1;
-  let bestDist = Infinity;
-
-  for (let i = 0; i < pool.length; i++) {
-    const candidate = pool[i];
-    if ((direction === 'left' || direction === 'right') && candidate.r !== target.r) continue;
-    if ((direction === 'up' || direction === 'down') && candidate.c !== target.c) continue;
-    const dist = Math.abs(candidate.r - target.r) + Math.abs(candidate.c - target.c);
-    if (dist < bestDist) {
-      bestDist = dist;
-      bestIndex = i;
-    }
-  }
-
-  return bestIndex;
-}
-
-function mapOrigins(newTiles, direction) {
-  const prevByValue = new Map();
-  prevTiles.forEach((tile) => {
-    if (!prevByValue.has(tile.value)) prevByValue.set(tile.value, []);
-    prevByValue.get(tile.value).push(tile);
-  });
-
-  return newTiles.map((tile) => {
-    const pool = prevByValue.get(tile.value) || [];
-    const idx = nearestTileIndex(pool, tile, direction);
-    if (idx === -1) return { ...tile, fromR: tile.r, fromC: tile.c, isSpawn: true };
-    const origin = pool.splice(idx, 1)[0];
-    return { ...tile, fromR: origin.r, fromC: origin.c, isSpawn: false };
-  });
-}
-
-function render(animate = false, direction = null) {
+function render() {
   ensureBoardChrome();
   const { size, gap } = getBoardMetrics();
   const currentTiles = buildTiles();
-  const tilesWithOrigins = mapOrigins(currentTiles, direction);
   tileLayer.innerHTML = '';
-  const animatedTiles = [];
 
   let highest = 0;
-  tilesWithOrigins.forEach((tile) => {
+  currentTiles.forEach((tile) => {
     highest = Math.max(highest, tile.value);
 
     const tileEl = document.createElement('div');
     tileEl.className = 'tile2048';
-    if (tile.isSpawn) tileEl.classList.add('spawn');
 
     tileEl.textContent = tile.value;
     tileEl.style.background = tileColor(tile.value);
@@ -220,29 +184,13 @@ function render(animate = false, direction = null) {
     tileEl.style.width = `${size}px`;
     tileEl.style.height = `${size}px`;
 
-    const fromX = tile.fromC * (size + gap);
-    const fromY = tile.fromR * (size + gap);
     const toX = tile.c * (size + gap);
     const toY = tile.r * (size + gap);
-    tileEl.style.transform = `translate3d(${animate ? fromX : toX}px, ${animate ? fromY : toY}px, 0)`;
+    tileEl.style.transform = `translate3d(${toX}px, ${toY}px, 0)`;
 
     tileLayer.appendChild(tileEl);
-
-    if (animate && (fromX !== toX || fromY !== toY)) {
-      animatedTiles.push({ tileEl, toX, toY });
-    }
   });
 
-  if (animate && animatedTiles.length) {
-    tileLayer.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      animatedTiles.forEach(({ tileEl, toX, toY }) => {
-        tileEl.style.transform = `translate3d(${toX}px, ${toY}px, 0)`;
-      });
-    });
-  }
-
-  prevTiles = currentTiles;
   scoreEl2048.textContent = score2048;
   bestTileEl.textContent = highest;
 }
@@ -251,8 +199,8 @@ function reset2048() {
   board = emptyBoard();
   score2048 = 0;
   gameOver2048 = false;
-  prevTiles = [];
   overlay2048.classList.remove('show');
+  overlay2048.textContent = 'NO MOVES LEFT';
   addRandomTile();
   addRandomTile();
   render(false);
@@ -265,11 +213,12 @@ function start2048Game() {
 }
 
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    event.preventDefault();
+  }
+
   if (event.key.toLowerCase() === 'r') {
-    if (!started2048) {
-      start2048Game();
-      return;
-    }
+    if (!started2048) return;
     reset2048();
     return;
   }
@@ -291,14 +240,14 @@ document.addEventListener('keydown', (event) => {
 });
 
 restart2048Btn.addEventListener('click', () => {
-  if (!started2048) {
-    start2048Game();
-    return;
-  }
+  if (!started2048) return;
   reset2048();
 });
 
 start2048Btn.addEventListener('click', start2048Game);
-window.addEventListener('resize', () => render(false));
+window.addEventListener('resize', render);
 
-reset2048();
+board = emptyBoard();
+score2048 = 0;
+gameOver2048 = false;
+render();
