@@ -55,6 +55,14 @@ function resetSnake() {
 }
 
 function drawSnake() {
+  const customizations = PixelPartyShop.load();
+  const snakeColors = {
+    green: { head: '#d9ffea', body: '#7dffae' },
+    blue: { head: '#e2f8ff', body: '#55cfff' },
+    pink: { head: '#ffe4f2', body: '#ff72b6' }
+  };
+  const selectedColors = snakeColors[customizations.snakeColor] || snakeColors.green;
+
   sctx.fillStyle = '#08110c';
   sctx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
 
@@ -72,12 +80,21 @@ function drawSnake() {
   }
 
   snake.forEach((segment, i) => {
-    sctx.fillStyle = i === 0 ? '#d9ffea' : '#7dffae';
+    sctx.fillStyle = i === 0 ? selectedColors.head : selectedColors.body;
     sctx.fillRect(segment.x * TILE + 2, segment.y * TILE + 2, TILE - 4, TILE - 4);
   });
 
-  sctx.fillStyle = '#ff6e86';
-  sctx.fillRect(food.x * TILE + 3, food.y * TILE + 3, TILE - 6, TILE - 6);
+  const foodPictures = { apple: '🍎', cherry: '🍒', star: '⭐' };
+  const foodPicture = foodPictures[customizations.snakeFood];
+  if (foodPicture) {
+    sctx.font = `${Math.floor(TILE * 0.9)}px "Segoe UI Emoji", sans-serif`;
+    sctx.textAlign = 'center';
+    sctx.textBaseline = 'middle';
+    sctx.fillText(foodPicture, (food.x + 0.5) * TILE, (food.y + 0.52) * TILE);
+  } else {
+    sctx.fillStyle = '#ff6e86';
+    sctx.fillRect(food.x * TILE + 3, food.y * TILE + 3, TILE - 6, TILE - 6);
+  }
 }
 
 function step() {
@@ -169,4 +186,4 @@ startSnakeBtn.addEventListener('click', startSnakeGame);
 resetSnake();
 setPauseButtonLabel();
 drawSnake();
-setInterval(step, 95);
+setInterval(step, 150);

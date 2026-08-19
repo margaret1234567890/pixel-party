@@ -187,7 +187,7 @@ body {
 .shop-balance strong { color: var(--accent); font-size: 1.4rem; }
 .shop-message { min-height: 28px; font-size: 1.25rem; color: var(--accent-hot); }
 .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; text-align: left; }
-.shop-item { min-height: 210px; padding: 18px; border: 3px solid var(--preview); border-radius: 12px; background: var(--preview-bg); }
+.shop-item { --preview: var(--accent); --preview-bg: var(--panel-b); min-height: 210px; padding: 18px; border: 3px solid var(--preview); border-radius: 12px; background: var(--preview-bg); }
 .shop-item h3 { margin: 0; color: var(--preview); font-family: "Press Start 2P", monospace; font-size: 1rem; }
 .shop-item p { font-size: 1.25rem; }
 .shop-price { color: var(--preview); }
@@ -196,6 +196,11 @@ body {
 .theme-sunset { --preview: #ff7b9c; --preview-bg: #2b1422; }
 .theme-ice { --preview: #67dfff; --preview-bg: #10283a; }
 .theme-galaxy { --preview: #bd7cff; --preview-bg: #21143a; }
+.theme-snake-blue { --preview: #55cfff; --preview-bg: #10283a; }
+.theme-snake-pink { --preview: #ff72b6; --preview-bg: #351426; }
+.theme-food-apple { --preview: #ff5b62; --preview-bg: #2c1518; }
+.theme-food-cherry { --preview: #ff4978; --preview-bg: #30101c; }
+.theme-food-star { --preview: #ffe066; --preview-bg: #29230e; }
 
 .game-layout {
   width: min(1100px, 96vw);
